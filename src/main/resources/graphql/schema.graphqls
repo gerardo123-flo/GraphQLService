@@ -1,0 +1,158 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+# ---------------------------------------------------------
+# QUERY RAÍZ (Todos los métodos de lectura)
+# ---------------------------------------------------------
+type Query {
+    # --- Módulo Evaluation (Tu código original) ---
+    getPersonalityTest: TestResponse!
+    getVocationalInterestsTest: TestResponse!
+    getCognitiveSkillsTest: TestResponse!
+    getEvaluationDetail(evaluationId: Int!): EvaluationDetailResponse!
+
+    # --- Módulo Academic Information ---
+    getAcademicInformation(page: Int!, pageSize: Int!): [AcademicInformationResponse!]!
+    getAcademicInformationById(id: Int!): AcademicInformationResponse
+    searchAcademicInformation(institutionName: String, degree: String): [AcademicInformationResponse!]!
+    getAcademicInformationCount: Int! # O Long/Float si esperas números gigantes
+
+    # --- Módulo Skills ---
+    getSkills(page: Int!, pageSize: Int!): [SkillResponse!]!
+    getSkillById(id: Int!): SkillResponse
+
+    # --- Módulo Work Experience (Solo lista, según solicitaste) ---
+    getWorkExperience(page: Int!, pageSize: Int!): [WorkExperienceResponse!]!
+}
+
+# ---------------------------------------------------------
+# MUTATION RAÍZ (Todos los métodos de escritura)
+# ---------------------------------------------------------
+type Mutation {
+    # --- Módulo Academic Information ---
+    createAcademicInformation(input: AcademicInformationRequest!): AcademicInformationResponse!
+    updateAcademicInformation(id: Int!, input: AcademicInformationRequest!): AcademicInformationResponse!
+    deleteAcademicInformation(id: Int!): Boolean!
+
+    # --- Módulo Skills ---
+    createSkill(input: SkillRequest!): SkillResponse!
+    updateSkill(id: Int!, input: UpdateSkillRequest!): SkillResponse!
+    deleteSkill(id: Int!): Boolean!
+
+    # --- Módulo Work Experience (Solo Create y Update) ---
+    createWorkExperience(input: WorkExperienceRequest!): WorkExperienceResponse!
+    updateWorkExperience(id: Int!, input: WorkExperienceRequest!): WorkExperienceResponse!
+}
+
+# =========================================================
+# TIPOS Y INPUTS - MÓDULO EVALUATION
+# =========================================================
+
+type TestResponse {
+    id: Int!
+    name: String!
+    description: String!
+    testType: String!
+    questionsToShow: Int!
+    questions: [QuestionResponse!]!
+}
+
+type QuestionResponse {
+    id: Int!
+    questionText: String!
+    orderNumber: Int!
+    options: [AnswerOptionResponse!]!
+}
+
+type AnswerOptionResponse {
+    id: Int!
+    optionText: String!
+}
+
+type EvaluationDetailResponse {
+    evaluationId: Int!
+    testName: String!
+    testType: String!
+    completionDate: String!
+    totalScore: String!
+    answers: [UserAnswerDetail!]!
+    analysisResult: String!
+}
+
+type UserAnswerDetail {
+    questionId: Int!
+    questionText: String!
+    selectedOptionId: Int!
+    selectedOptionText: String!
+    category: String!
+    weightValue: Int!
+}
+
+# =========================================================
+# TIPOS Y INPUTS - MÓDULO ACADEMIC
+# =========================================================
+
+type AcademicInformationResponse {
+    id: Int
+    institution: String
+    career: String
+    average: Float        # BigDecimal en Java suele mapearse a Float
+    startDate: String     # LocalDate se maneja como String (ISO-8601)
+    endDate: String
+    inProgress: Boolean
+}
+
+input AcademicInformationRequest {
+    institution: String!
+    career: String
+    average: Float
+    startDate: String!
+    endDate: String
+    inProgress: Boolean
+}
+
+# =========================================================
+# TIPOS Y INPUTS - MÓDULO SKILLS
+# =========================================================
+
+type SkillResponse {
+    id: Int
+    skillName: String
+    proficiencyLevel: Int
+}
+
+input SkillRequest {
+    skillName: String!
+    proficiencyLevel: Int!
+}
+
+# Input específico para updates (con campos obligatorios según tu DTO Java)
+input UpdateSkillRequest {
+    skillName: String!
+    proficiencyLevel: Int!
+}
+
+# =========================================================
+# TIPOS Y INPUTS - MÓDULO WORK EXPERIENCE
+# =========================================================
+
+type WorkExperienceResponse {
+    id: Int
+    company: String
+    position: String
+    description: String
+    startDate: String
+    endDate: String
+    currentJob: Boolean
+}
+
+input WorkExperienceRequest {
+    company: String!
+    position: String!
+    description: String!
+    startDate: String!
+    endDate: String
+    currentJob: Boolean
+}
