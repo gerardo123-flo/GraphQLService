@@ -11,7 +11,7 @@
 	<groupId>career.compass</groupId>
 	<artifactId>apigrapgql</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>apigrapgql</name>
 	<description>Api GraphQl for Career Compass Project</description>
 	<url/>
